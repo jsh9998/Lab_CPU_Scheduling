@@ -23,7 +23,7 @@ int isNullPCB(struct PCB newProcess)
 struct PCB handle_process_arrival_pp(struct PCB ready_queue[QUEUEMAX], int *queue_cnt, struct PCB current_process, struct PCB new_process, int timestamp)
 {
 
-    if (!isNullPCB(current_process))
+    if (isNullPCB(current_process) != 1)
     {
         if (new_process.process_priority >= current_process.process_priority)
         {
