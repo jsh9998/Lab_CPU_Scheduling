@@ -12,7 +12,7 @@ struct PCB handle_process_completion_rr(struct PCB ready_queue[QUEUEMAX], int *q
 int isNullPCB(struct PCB newProcess)
 {
 
-    if (newProcess.process_id == 0 && newProcess.arrival_timestamp == 0 && newProcess.total_bursttime == 0 && newProcess.execution_starttime == 0 && newProcess.execution_endtime == 0 && newProcess.remaining_bursttime == 0 && newProcess.process_priority == 0)
+    if ((newProcess.process_id == 0) && (newProcess.arrival_timestamp == 0) && (newProcess.total_bursttime == 0) && (newProcess.execution_starttime == 0) && (newProcess.execution_endtime == 0) && (newProcess.remaining_bursttime == 0) && (newProcess.process_priority == 0))
     {
         return 1;
     }
