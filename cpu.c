@@ -93,7 +93,7 @@ struct PCB handle_process_completion_pp(struct PCB ready_queue[QUEUEMAX], int *q
     // store in variable to return
     temp = ready_queue[hpr];
     // edit ready queue
-    for (int x = 0; x < *queue_cnt - 1; x++)
+    for (int x = hpr; x < *queue_cnt - 1; x++)
     {
         ready_queue[x] = ready_queue[x + 1];
     }
