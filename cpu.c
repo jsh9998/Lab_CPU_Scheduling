@@ -1,6 +1,7 @@
 #include "oslabs.h"
 
 int isNullPCB(struct PCB newProcess);
+struct PCB createNullPCB();
 struct PCB handle_process_arrival_pp(struct PCB ready_queue[QUEUEMAX], int *queue_cnt, struct PCB current_process, struct PCB new_process, int timestamp);
 struct PCB handle_process_completion_pp(struct PCB ready_queue[QUEUEMAX], int *queue_cnt, int timestamp);
 struct PCB handle_process_arrival_srtp(struct PCB ready_queue[QUEUEMAX], int *queue_cnt, struct PCB current_process, struct PCB new_process, int time_stamp);
@@ -53,8 +54,81 @@ struct PCB handle_process_arrival_pp(struct PCB ready_queue[QUEUEMAX], int *queu
     return new_process;
 }
 
+struct PCB createNullPCB()
+{
+    struct PCB nullPCB;
+    nullPCB.process_id = 0;
+    nullPCB.arrival_timestamp = 0;
+    nullPCB.total_bursttime = 0;
+    nullPCB.execution_starttime = 0;
+    nullPCB.execution_endtime = 0;
+    nullPCB.remaining_bursttime = 0;
+    nullPCB.process_priority = 0;
+    return nullPCB;
+}
+
 struct PCB handle_process_completion_pp(struct PCB ready_queue[QUEUEMAX], int *queue_cnt, int timestamp)
 {
+    struct PCB nullPCB;
+    struct PCB temp;
+
+    if (*queue_cnt == 0)
+    {
+        nullPCB = createNullPCB();
+        return nullPCB;
+    }
+
+    int highest_priority;
+    int hpr; // highest process reference
+
+    for (int x = 0; x < *queue_cnt; x++)
+    {
+
+        if (x == 0)
+        {
+            highest_priority = ready_queue[0].process_priority;
+            hpr = 0;
+        }
+
+        if (ready_queue[x].process_priority < highest_priority)
+        {
+            highest_priority = ready_queue[x].process_priority;
+            hpr = x;
+        }
+
+        // store in variable to return/remove
+        temp = ready_queue[hpr];
+
+        struct PCB temp_ready_queue[QUEUEMAX] = ready_queue;
+        int flag = 0;
+        // edit ready queue
+        for (int x = 0; x < *queue_cnt; x++)
+        {
+            if (x != hpr)
+            {
+                if (flag == 0)
+                {
+                    temp_ready_queue[x] = ready_queue[x];
+                }
+                else
+                {
+                    temp_ready_queue[x - 1] = ready_queue[x];
+                }
+            }
+            else
+            {
+                flag = 1;
+            }
+        }
+
+        ready_queue = temp_ready_queue;
+        *queue_cnt = *queue_cnt - 1;
+
+        temp.execution_starttime = timestamp;
+        temp.execution_endtime = timestamp + temp.remaining_bursttime;
+        return temp;
+    }
+
     return ready_queue[0];
 }
 struct PCB handle_process_arrival_srtp(struct PCB ready_queue[QUEUEMAX], int *queue_cnt, struct PCB current_process, struct PCB new_process, int time_stamp)
