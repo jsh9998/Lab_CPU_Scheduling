@@ -93,22 +93,21 @@ struct PCB handle_process_completion_pp(struct PCB ready_queue[QUEUEMAX], int *q
             highest_priority = ready_queue[x].process_priority;
             hpr = x;
         }
-
-        // store in variable to return
-        temp = ready_queue[hpr];
-        // edit ready queue
-        for (int x = 0; x < *queue_cnt - 1; x++)
-        {
-            ready_queue[x] = ready_queue[x + 1];
-        }
-        *queue_cnt = *queue_cnt - 1;
-        temp.execution_starttime = timestamp;
-        temp.execution_endtime = timestamp + temp.remaining_bursttime;
-        return temp;
     }
 
-    return ready_queue[0];
+    // store in variable to return
+    temp = ready_queue[hpr];
+    // edit ready queue
+    for (int x = 0; x < *queue_cnt - 1; x++)
+    {
+        ready_queue[x] = ready_queue[x + 1];
+    }
+    *queue_cnt = *queue_cnt - 1;
+    temp.execution_starttime = timestamp;
+    temp.execution_endtime = timestamp + temp.remaining_bursttime;
+    return temp;
 }
+
 struct PCB handle_process_arrival_srtp(struct PCB ready_queue[QUEUEMAX], int *queue_cnt, struct PCB current_process, struct PCB new_process, int time_stamp)
 {
     return current_process;
