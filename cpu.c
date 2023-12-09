@@ -9,6 +9,12 @@ struct PCB handle_process_completion_srtp(struct PCB ready_queue[QUEUEMAX], int 
 struct PCB handle_process_arrival_rr(struct PCB ready_queue[QUEUEMAX], int *queue_cnt, struct PCB current_process, struct PCB new_process, int timestamp, int time_quantum);
 struct PCB handle_process_completion_rr(struct PCB ready_queue[QUEUEMAX], int *queue_cnt, int time_stamp, int time_quantum);
 
+int main()
+{
+    struct PCB s1 = {1, 1, 3, 1, 0, 3, 8};
+    return 0;
+}
+
 int isNullPCB(struct PCB newProcess)
 {
 
@@ -30,7 +36,7 @@ struct PCB handle_process_arrival_pp(struct PCB ready_queue[QUEUEMAX], int *queu
             new_process.execution_starttime = 0;
             new_process.execution_endtime = 0;
             new_process.remaining_bursttime = new_process.total_bursttime;
-            ready_queue[*queue_cnt] = new_process;
+            ready_queue[(*queue_cnt)] = new_process;
             (*queue_cnt)++;
 
             return current_process;
@@ -41,7 +47,7 @@ struct PCB handle_process_arrival_pp(struct PCB ready_queue[QUEUEMAX], int *queu
             new_process.execution_endtime = timestamp + new_process.total_bursttime;
             new_process.remaining_bursttime = new_process.total_bursttime;
             current_process.execution_endtime = 0;
-            ready_queue[*queue_cnt] = current_process;
+            ready_queue[(*queue_cnt)] = current_process;
             (*queue_cnt)++;
 
             return new_process;
