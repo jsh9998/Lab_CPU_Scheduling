@@ -78,17 +78,12 @@ struct PCB handle_process_completion_pp(struct PCB ready_queue[QUEUEMAX], int *q
         return nullPCB;
     }
 
-    int highest_priority;
-    int hpr; // highest process reference
+    int highest_priority = ready_queue[0].process_priority;
+    int hpr = 0; // highest process reference
 
-    for (int x = 0; x < *queue_cnt; x++)
+    for (int x = 1; x < *queue_cnt; x++)
     {
-        if (x == 0)
-        {
-            highest_priority = ready_queue[0].process_priority;
-            hpr = 0;
-        }
-        if (ready_queue[x].process_priority < highest_priority)
+        if (!highest_priority < ready_queue[x].process_priority)
         {
             highest_priority = ready_queue[x].process_priority;
             hpr = x;
