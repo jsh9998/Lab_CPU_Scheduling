@@ -9,12 +9,6 @@ struct PCB handle_process_completion_srtp(struct PCB ready_queue[QUEUEMAX], int 
 struct PCB handle_process_arrival_rr(struct PCB ready_queue[QUEUEMAX], int *queue_cnt, struct PCB current_process, struct PCB new_process, int timestamp, int time_quantum);
 struct PCB handle_process_completion_rr(struct PCB ready_queue[QUEUEMAX], int *queue_cnt, int time_stamp, int time_quantum);
 
-int main()
-{
-    struct PCB s1 = {1, 1, 3, 1, 0, 3, 8};
-    return 0;
-}
-
 int isNullPCB(struct PCB newProcess)
 {
 
