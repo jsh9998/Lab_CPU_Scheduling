@@ -83,21 +83,21 @@ struct PCB handle_process_completion_pp(struct PCB ready_queue[QUEUEMAX], int *q
 
     for (int x = 1; x < *queue_cnt; x++)
     {
-        if (!highest_priority < ready_queue[x].process_priority)
+        if (!(highest_priority < ready_queue[x].process_priority))
         {
             highest_priority = ready_queue[x].process_priority;
             hpr = x;
         }
     }
 
-    // store in variable to return
     temp = ready_queue[hpr];
-    // edit ready queue
+    int lenArray = sizeof(ready_queue) / sizeof(ready_queue[0]);
     for (int x = hpr; x < *queue_cnt - 1; x++)
     {
         ready_queue[x] = ready_queue[x + 1];
     }
     *queue_cnt = *queue_cnt - 1;
+
     temp.execution_starttime = timestamp;
     temp.execution_endtime = timestamp + temp.remaining_bursttime;
     return temp;
