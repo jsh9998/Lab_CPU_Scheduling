@@ -172,9 +172,67 @@ struct PCB handle_process_completion_srtp(struct PCB ready_queue[QUEUEMAX], int 
 }
 struct PCB handle_process_arrival_rr(struct PCB ready_queue[QUEUEMAX], int *queue_cnt, struct PCB current_process, struct PCB new_process, int timestamp, int time_quantum)
 {
+    if (!isNullPCB(current_process))
+    {
+        new_process.execution_starttime = 0;
+        new_process.execution_endtime = 0;
+        new_process.remaining_bursttime = new_process.total_bursttime;
+        ready_queue[*queue_cnt] = new_process;
+        (*queue_cnt)++;
+        return current_process;
+    }
+
+    new_process.execution_starttime = timestamp;
+    if (new_process.total_bursttime < time_quantum)
+    {
+        new_process.execution_endtime = timestamp + new_process.total_bursttime;
+    }
+    else
+    {
+        new_process.execution_endtime = timestamp + time_quantum;
+    }
+    new_process.remaining_bursttime = new_process.total_bursttime;
     return new_process;
 }
 struct PCB handle_process_completion_rr(struct PCB ready_queue[QUEUEMAX], int *queue_cnt, int time_stamp, int time_quantum)
 {
-    return ready_queue[0];
+    struct PCB nullPCB;
+    struct PCB temp;
+
+    if (*queue_cnt == 0)
+    {
+        nullPCB = createNullPCB();
+        return nullPCB;
+    }
+
+    int eat = 0;
+    int eat_index = 0;
+
+    for (int x = 0; x < queue_cnt; x++)
+    {
+        if (ready_queue[x].arrival_timestamp < ready_queue[eat_index].arrival_timestamp)
+        {
+            eat = ready_queue[x].arrival_timestamp;
+            eat_index = x;
+        }
+    }
+
+    temp = ready_queue[eat_index];
+    for (int x = eat_index; x < *queue_cnt - 1; x++)
+    {
+        ready_queue[x] = ready_queue[x + 1];
+    }
+    *queue_cnt = queue_cnt - 1;
+
+    temp.execution_starttime = time_stamp;
+    if (temp.remaining_bursttime < time_quantum)
+    {
+        temp.execution_endtime = time_stamp + temp.remaining_bursttime;
+    }
+    else
+    {
+        temp.execution_endtime = time_stamp + time_quantum;
+    }
+
+    return temp;
 }
