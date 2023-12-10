@@ -82,7 +82,7 @@ struct PCB handle_process_completion_pp(struct PCB ready_queue[QUEUEMAX], int *q
     int highest_priority = ready_queue[0].process_priority;
     int hpr = 0; // highest process reference
 
-    for (int x = 1; x < *queue_cnt; x++)
+    for (int x = 0; x < *queue_cnt; x++)
     {
         if (!(highest_priority < ready_queue[x].process_priority))
         {
@@ -92,15 +92,15 @@ struct PCB handle_process_completion_pp(struct PCB ready_queue[QUEUEMAX], int *q
     }
 
     temp = ready_queue[hpr];
-    // int lenArray = sizeof(ready_queue) / sizeof(ready_queue[0]);
+    temp.execution_starttime = timestamp;
+    temp.execution_endtime = timestamp + temp.remaining_bursttime;
+
     for (int x = hpr; x < *queue_cnt - 1; x++)
     {
         ready_queue[x] = ready_queue[x + 1];
     }
     *queue_cnt = *queue_cnt - 1;
 
-    temp.execution_starttime = timestamp;
-    temp.execution_endtime = timestamp + temp.remaining_bursttime;
     return temp;
 }
 
@@ -138,7 +138,37 @@ struct PCB handle_process_arrival_srtp(struct PCB ready_queue[QUEUEMAX], int *qu
 }
 struct PCB handle_process_completion_srtp(struct PCB ready_queue[QUEUEMAX], int *queue_cnt, int timestamp)
 {
-    return ready_queue[0];
+    struct PCB nullPCB;
+    struct PCB temp;
+    if (*queue_cnt == 0)
+    {
+        nullPCB = createNullPCB();
+        return nullPCB;
+    }
+
+    int smallest_remaining_burst_time = ready_queue[0].remaining_bursttime;
+    int index = 0;
+
+    for (int x = 0; x < *queue_cnt; x++)
+    {
+        if (ready_queue[x].remaining_bursttime < smallest_remaining_burst_time)
+        {
+            smallest_remaining_burst_time = ready_queue[x].remaining_bursttime;
+            index = x;
+        }
+    }
+
+    temp = ready_queue[index];
+    temp.execution_starttime = timestamp;
+    temp.execution_endtime = timestamp + temp.remaining_bursttime;
+
+    for (int x = index; x < *queue_cnt - 1; x++)
+    {
+        ready_queue[x] = ready_queue[x + 1];
+    }
+
+    *queue_cnt = *queue_cnt - 1;
+    return temp;
 }
 struct PCB handle_process_arrival_rr(struct PCB ready_queue[QUEUEMAX], int *queue_cnt, struct PCB current_process, struct PCB new_process, int timestamp, int time_quantum)
 {
