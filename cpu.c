@@ -208,7 +208,7 @@ struct PCB handle_process_completion_rr(struct PCB ready_queue[QUEUEMAX], int *q
     int eat = 0;
     int eat_index = 0;
 
-    for (int x = 0; x < queue_cnt; x++)
+    for (int x = 0; x < *queue_cnt; x++)
     {
         if (ready_queue[x].arrival_timestamp < ready_queue[eat_index].arrival_timestamp)
         {
@@ -222,7 +222,7 @@ struct PCB handle_process_completion_rr(struct PCB ready_queue[QUEUEMAX], int *q
     {
         ready_queue[x] = ready_queue[x + 1];
     }
-    *queue_cnt = queue_cnt - 1;
+    *queue_cnt = *queue_cnt - 1;
 
     temp.execution_starttime = time_stamp;
     if (temp.remaining_bursttime < time_quantum)
