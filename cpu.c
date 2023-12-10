@@ -125,7 +125,8 @@ struct PCB handle_process_arrival_srtp(struct PCB ready_queue[QUEUEMAX], int *qu
             new_process.remaining_bursttime = new_process.total_bursttime;
 
             current_process.execution_endtime = 0;
-            current_process.remaining_bursttime -= time_stamp - current_process.execution_starttime;
+            current_process.remaining_bursttime = current_process.remaining_bursttime - time_stamp - current_process.execution_starttime;
+            current_process.execution_starttime = 0;
             ready_queue[*queue_cnt] = current_process;
             (*queue_cnt)++;
             return new_process;
